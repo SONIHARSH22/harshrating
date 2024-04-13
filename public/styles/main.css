@@ -1,0 +1,32 @@
+h1{
+    color: aquamarine;
+}
+
+.mainouter{
+    margin: auto;
+    display: flex;
+    gap: 10px;
+    width: 1230px;
+    flex-wrap: wrap;
+}
+
+.outer{
+    border: solid 2px black;
+    border-radius: 20px;
+    height: 510px;
+    width: 410px;
+    margin-bottom: 20px;
+    flex-basis: calc(33.33% - 20px);
+}
+
+li{
+   list-style: none;
+   margin-left: 20px;
+}
+
+.supposeimage{
+    height: 210px;
+    width: 310px;
+    background-color: chocolate;
+    margin: auto;
+}
