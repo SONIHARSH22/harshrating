@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/main.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/main.css" />
 
     <title>Document</title>
 </head>
@@ -12,19 +12,19 @@
 <body>
     <h1>Hello foodies</h1>
 
-    <a href="/add"><button> want to add store</button></a>
+    <a href="/add"><button>want to add store</button></a>
 
     <form action="/bycitybyareabyfood" method="get">
-        <h2>Search By: <input type="text" name="city" placeholder="Enter City">,
+        <h2>
+            Search By: <input type="text" name="city" placeholder="Enter City" />,
             <!-- <input type="text" name="all" placeholder="Search for famous street food, by Name or by area or by shopname"> -->
-            <input type="text" name="fooditem" placeholder="Enter Food Item">,
-            <input type="text" name="area" placeholder="Your City Area">,
-            <input type="text" name="storename" placeholder="Store Name">,
+            <input type="text" name="fooditem" placeholder="Enter Food Item" />,
+            <input type="text" name="area" placeholder="Your City Area" />,
+            <input type="text" name="storename" placeholder="Store Name" />,
             <button type="submit">Submit</button>
-
         </h2>
-
     </form>
+
     <div class="mainouter">
         <% street.forEach(element=> { %>
             <!-- <h4>
@@ -34,39 +34,41 @@
                 <%= element.food_item %>,
                 <%= element.overall_rating %>,
             </h4> -->
-            <div class="outer">
-                <div class="supposeimage">
-                <p>.</p>
-                </div>
-                <div class="detail">
-                    <li>
-                        <h2>
-                            <%= element.store_name %>,
-                        </h2>
-                    </li>
-                    <li>
-                        <h4>
-                            <img src="/images/pin.png" alt="" >&nbsp <%= element.city %>,&nbsp <%= element.area %>,
-                        </h4>
-                    </li>
-                    <li>
-                        <h3>
-                            <%= element.food_item %>,
+            <form action="/showdetial" method="get">
+                <button class="wholebutton">
+                    <div class="outer">
+                        <div class="supposeimage">
+                            <p>.</p>
+                        </div>
 
-                        </h3>
-                    </li>
-                    <li>
-                        <h3>
-                            <%= element.overall_rating %>,
-
-                        </h3>
-                    </li>
-                
-                </div>
-
-            </div>
+                        <div class="detail">
+                            <li>
+                                <h2>
+                                    <%= element.store_name %>,
+                                </h2>
+                            </li>
+                            <li>
+                                <h4>
+                                    <img src="/images/pin.png" alt="" />&nbsp <%= element.city %>,&nbsp <%= element.area %>,
+                                            </h4>
+                                            </li>
+                                            <li>
+                                                <h3>
+                                                    <%= element.food_item %>,
+                                </h3>
+                                </li>
+                                <li>
+                                    <h3>
+                                        <%= element.overall_rating %>,
+                                </h3>
+                                </li>
+                        </div>
+                    </div>
+                    <input type="hidden" name="gotstoreid" value="<%=element.id%>" />
+                    </button>
+                    </form>
             <% }) %>
-        </div>
+    </div>
 </body>
 
 </html>

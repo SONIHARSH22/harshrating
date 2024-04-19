@@ -203,6 +203,35 @@ app.get("/bycitybyareabyfood", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+/////////////////////////////////////////////////////////////
+app.get("/showdetial",async (req,res)=>{
+
+  const shop = req.query.gotstoreid;
+  
+
+  res.render("review.ejs",{id:shop});
+
+});
+
+//////
+app.get("/addrating",async (req,res)=>{
+
+  const shop = req.query.storeid;
+
+  res.render("rating.ejs",{id:shop});
+
+});
+
+app.post("/rate",async (req,res)=>{
+  
+const storeid = req.body.storeid;
+console.log(storeid);
+const overrating = req.body.overallrate;
+const query = await db.query(`SELECT overall_rating FROM food1 WHERE id = $1`, [storeid] ) ;
+  console.log(query.rows);
+});
+
 ////////////////////////////////////////////////////////////
 app.post("/insert", async (req, res) => {
   try {

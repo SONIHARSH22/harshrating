@@ -15,7 +15,7 @@ h1{
     border-radius: 20px;
     height: 510px;
     width: 410px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     flex-basis: calc(33.33% - 20px);
 }
 
@@ -29,4 +29,8 @@ li{
     width: 310px;
     background-color: chocolate;
     margin: auto;
+}
+.wholebutton {
+    margin: 0%;
+    padding: 0%;
 }
