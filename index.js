@@ -29,10 +29,11 @@ app.use(passport.session());
 
 
 const db = new pg.Client({
-  connectionString: process.env.RENDER_POSTGRESQL_URL, // Use the environment variable provided by Render
-  ssl: {
-    rejectUnauthorized: false, // Render's PostgreSQL server uses SSL, so you need to set this option to false
-  },
+  user: "harshratingdatabase_user",
+  host: "dpg-couh5c21hbls7386lp6g-a",
+  database: "harshratingdatabase",
+  password: "9as7fAipuDIQ4MVY4PYc87PjP9OlAU8O",
+  port: 5432,
 });
 
 db.connect((err) => {
