@@ -29,7 +29,7 @@ app.use(passport.session());
 
 if (process.env.NODE_ENV === "production") {
   // Use Render database configuration
-  db = new Client({
+  db = new pg.Client({
     connectionString: process.env.RENDER_POSTGRESQL_URL,
     ssl: {
       rejectUnauthorized: false,
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === "production") {
   });
 } else {
   // Use local database configuration
-  db = new Client({
+  db = new pg.Client({
     user: "postgres",
     host: "localhost",
     database: "streetfood",
