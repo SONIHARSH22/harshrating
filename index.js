@@ -29,10 +29,10 @@ app.use(passport.session());
 
 
 const db = new pg.Client({
-  user: "harshratingdatabase_user",
-  host: "dpg-couh5c21hbls7386lp6g-a",
-  database: "harshratingdatabase",
-  password: "9as7fAipuDIQ4MVY4PYc87PjP9OlAU8O",
+  user: "postgres",
+  host: "localhost",
+  database: "streetfood",
+  password: process.env.password,
   port: 5432,
 });
 
