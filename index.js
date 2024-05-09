@@ -27,13 +27,24 @@ app.use(express.static("public"));
 app.use(passport.initialize());
 app.use(passport.session());
 
-const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "streetfood",
-  password: process.env.password,
-  port: 5432,
-});
+if (process.env.NODE_ENV === "production") {
+  // Use Render database configuration
+  db = new Client({
+    connectionString: process.env.RENDER_POSTGRESQL_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+} else {
+  // Use local database configuration
+  db = new Client({
+    user: "postgres",
+    host: "localhost",
+    database: "streetfood",
+    password: process.env.LOCAL_DB_PASSWORD, // Set this environment variable locally
+    port: 5432,
+  });
+}
 db.connect((err) => {
   if (err) {
     console.error("Error connecting to database", err.stack);
