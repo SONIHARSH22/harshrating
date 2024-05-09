@@ -38,7 +38,7 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "streetfood",
-  password: "12345678",
+  password: process.env.password,
   port: 5432,
 });
 db.connect((err) => {
@@ -49,7 +49,7 @@ db.connect((err) => {
   console.log("Connected to database");
 });
 
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.render("loginregister.ejs");
@@ -69,7 +69,10 @@ app.post("/register", async (req, res) => {
   const phoneno = req.body.number;
 
   try {
-    const checkResult = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [email]);
+    const checkResult = await db.query(
+      "SELECT * FROM userloginregister WHERE emailid = $1",
+      [email]
+    );
 
     if (checkResult.rows.length > 0) {
       // res.send("Email already exists. Try logging in.");
@@ -83,19 +86,19 @@ app.post("/register", async (req, res) => {
           console.log("Hashed Password:", hash);
           const result = await db.query(
             "INSERT INTO userloginregister (emailid,phonenumber,password) VALUES ($1, $2, $3) RETURNING *",
-            [email,phoneno,hash]
+            [email, phoneno, hash]
           );
           console.log(result);
 
           const user = result.rows[0];
           console.log(result.rows[0]);
 
-          req.login(user,(err)=>{
+          req.login(user, (err) => {
             console.log(result);
 
             console.log("success");
             res.redirect("/mainpage");
-          })
+          });
         }
       });
     }
@@ -119,37 +122,34 @@ app.get(
   })
 );
 
-
-app.post("/login",passport.authenticate("local",{
-  successRedirect:"/mainpage",
-  failureRedirect: "/login"
-}));
-
-
-
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/mainpage",
+    failureRedirect: "/login",
+  })
+);
 
 app.get("/mainpage", async (req, res) => {
   //console.log(req.user);
 
-  if(req.isAuthenticated()){
-  try {
-    const result = await db.query(
-      `SELECT * FROM food1 ORDER BY overall_rating DESC;`
-    );
-    const i = result.rows;
-    // console.log(i);
-    console.log(req.user);
-    res.render("index.ejs", { street: i,username: req.user.name});
-    // res.json(i);
-  } catch (error) {
-    console.error("Error executing query", error.stack);
-    res.status(500).send("Internal Server Error");
+  if (req.isAuthenticated()) {
+    try {
+      const result = await db.query(
+        `SELECT * FROM food1 ORDER BY overall_rating DESC;`
+      );
+      const i = result.rows;
+      // console.log(i);
+      console.log(req.user);
+      res.render("index.ejs", { street: i, username: req.user.name });
+      // res.json(i);
+    } catch (error) {
+      console.error("Error executing query", error.stack);
+      res.status(500).send("Internal Server Error");
+    }
+  } else {
+    return res.redirect("/login");
   }
-
-}
-else{
-  return res.redirect("/login")
-}
 });
 
 app.get("/add", async (req, res) => {
@@ -181,28 +181,25 @@ app.get("/bycitybyareabyfood", async (req, res) => {
     let params = [cityname];
 
     let queryString = `SELECT * FROM food1 WHERE city = $1`;
-  
+
     if (cityfood) {
-      
-      queryString += ` AND food_item = $${params.length+1}`;
+      queryString += ` AND food_item = $${params.length + 1}`;
       params.push(cityfood);
     }
-    
+
     if (cityarea) {
-      
-      queryString += ` AND area = $${params.length+1}`;
+      queryString += ` AND area = $${params.length + 1}`;
       params.push(cityarea);
-    };
+    }
     if (store) {
-      
-      queryString += ` AND store_name = $${params.length+1}`;
+      queryString += ` AND store_name = $${params.length + 1}`;
       params.push(store);
     }
-  
+
     queryString += ` ORDER BY overall_rating DESC`;
 
     //const result = await db.query(queryString);
-    const result = await db.query(queryString,params);
+    const result = await db.query(queryString, params);
     const i = result.rows;
 
     // Send response with the retrieved data
@@ -214,7 +211,7 @@ app.get("/bycitybyareabyfood", async (req, res) => {
 });
 
 /////////////////////////////////////////////////////////////
-app.get("/showdetial",async (req,res)=>{
+app.get("/showdetial", async (req, res) => {
   const shop = req.query.id;
 
   try {
@@ -234,44 +231,45 @@ app.get("/showdetial",async (req,res)=>{
 });
 
 //////
-app.get("/addrating",async (req,res)=>{
-
+app.get("/addrating", async (req, res) => {
   const shop = req.query.storeid;
 
-  res.render("rating.ejs",{id:shop});
-
+  res.render("rating.ejs", { id: shop });
 });
 
-app.post("/rate",async (req,res)=>{
+app.post("/rate", async (req, res) => {
   try {
-const storeid = req.body.storeid;
-const new_rating= parseFloat(req.body.given_rating);
-console.log(storeid);
-console.log(new_rating);
-const previous_rating = await db.query(`SELECT overall_rating FROM food1 WHERE id = $1`, [storeid] );
-const previous_rating_value = parseFloat(previous_rating.rows[0].overall_rating);
-console.log("previous-rating", previous_rating_value);
-const average_rating = (new_rating + previous_rating_value)/2;
-console.log("average rating=",average_rating);
+    const storeid = req.body.storeid;
+    const new_rating = parseFloat(req.body.given_rating);
+    console.log(storeid);
+    console.log(new_rating);
+    const previous_rating = await db.query(
+      `SELECT overall_rating FROM food1 WHERE id = $1`,
+      [storeid]
+    );
+    const previous_rating_value = parseFloat(
+      previous_rating.rows[0].overall_rating
+    );
+    console.log("previous-rating", previous_rating_value);
+    const average_rating = (new_rating + previous_rating_value) / 2;
+    console.log("average rating=", average_rating);
 
-const update_query = await db.query(`UPDATE food1 SET overall_rating = $1 WHERE id = $2;`, [average_rating, storeid]);
+    const update_query = await db.query(
+      `UPDATE food1 SET overall_rating = $1 WHERE id = $2;`,
+      [average_rating, storeid]
+    );
 
-console.log("upadate_query",update_query);
-res.redirect('/mainpage');
-//res.status(200).send({ success: true, message: "Rating updated successfully" });
-} catch (error) {
-  console.error("Error occurred:", error);
-  res.status(500).send({ success: false, message: "Internal Server Error" });
-}
-
+    console.log("upadate_query", update_query);
+    res.redirect("/mainpage");
+    //res.status(200).send({ success: true, message: "Rating updated successfully" });
+  } catch (error) {
+    console.error("Error occurred:", error);
+    res.status(500).send({ success: false, message: "Internal Server Error" });
+  }
 });
 // ??????????????????????????????????????????????
-app.get("/localtest",async (req,res)=>{
-
-  
-
+app.get("/localtest", async (req, res) => {
   res.render("test.ejs");
-
 });
 ////////////////////////////////////////////////////////////
 app.post("/insert", async (req, res) => {
@@ -289,9 +287,12 @@ app.post("/insert", async (req, res) => {
     console.log(rating);
 
     // Assuming you have a connection to your MySQL database named `connection`
-    
-    const query = "INSERT INTO food1 (store_name, city, area, food_item, overall_rating) VALUES ($1, $2, $3, $4, $5)";
-    db.query( query,[store, cityname, cityarea, cityfood, rating],
+
+    const query =
+      "INSERT INTO food1 (store_name, city, area, food_item, overall_rating) VALUES ($1, $2, $3, $4, $5)";
+    db.query(
+      query,
+      [store, cityname, cityarea, cityfood, rating],
       (error, results, fields) => {
         if (error) {
           console.error("Error inserting data:", error);
@@ -308,36 +309,38 @@ app.post("/insert", async (req, res) => {
   }
 });
 
-passport.use("local",
-  new Strategy(async function verify(username, password, cd){
-   
-  try {
-    const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [username,]);
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-      const storedHashedPassword = user.password;
-      //verifying the password
-      bcrypt.compare(password, storedHashedPassword, (err, result) => {
-        if (err) {
-          console.error("Error comparing passwords:", err);
-          return cd(err);
-        } else {
-          if (result) {
-            //Passed password check
-            return cd(null,user);
+passport.use(
+  "local",
+  new Strategy(async function verify(username, password, cd) {
+    try {
+      const result = await db.query(
+        "SELECT * FROM userloginregister WHERE emailid = $1",
+        [username]
+      );
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        const storedHashedPassword = user.password;
+        //verifying the password
+        bcrypt.compare(password, storedHashedPassword, (err, result) => {
+          if (err) {
+            console.error("Error comparing passwords:", err);
+            return cd(err);
           } else {
-            //Did not pass password check
-            return cd(null, false)
+            if (result) {
+              //Passed password check
+              return cd(null, user);
+            } else {
+              //Did not pass password check
+              return cd(null, false);
+            }
           }
-        }
-      });
-    } else {
-      return cd("User not found");
+        });
+      } else {
+        return cd("User not found");
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-
   })
 );
 
@@ -345,21 +348,30 @@ passport.use(
   "google",
   new GoogleStrategy(
     {
-      clientID: "194492778510-h50r40kvk9gacq633mea5famedlsi4fm.apps.googleusercontent.com",
-      clientSecret:"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",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-      scope: ["profile", "email"]
+      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, cb) => {
-      
       try {
         //console.log(profile);
-        const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [profile.email,]);
+        const result = await db.query(
+          "SELECT * FROM userloginregister WHERE emailid = $1",
+          [profile.email]
+        );
         if (result.rows.length === 0) {
           const newUser = await db.query(
             "INSERT INTO userloginregister (emailid, phonenumber, password, name, username, profile_photo) VALUES ($1,$2,$3,$4,$5,$6)",
-            [profile.email, profile.provider, profile.provider, profile.given_name, profile.family_name, profile.picture]
+            [
+              profile.email,
+              profile.provider,
+              profile.provider,
+              profile.given_name,
+              profile.family_name,
+              profile.picture,
+            ]
           );
           return cb(null, newUser.rows[0]);
         } else {
@@ -368,7 +380,6 @@ passport.use(
       } catch (err) {
         return cb(err);
       }
-
     }
   )
 );
