@@ -26,6 +26,7 @@ app.use(express.static("public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
+let db;
 
 if (process.env.NODE_ENV === "production") {
   // Use Render database configuration
