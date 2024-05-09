@@ -14,10 +14,17 @@ const app = express();
 const port = 3000;
 const saltRounds = 10;
 env.config();
+
+// Set session expiration time to 30 minutes (adjust as needed)
+const sessionExpirationTime = 30 * 60 * 1000; // 30 minutes in milliseconds
+
 app.use( session({
   secret:"TOPSECRETWORD",
   resave: false,
-  saveUninitialized:true
+  saveUninitialized:true,
+  cookie: {
+    maxAge: sessionExpirationTime
+  }
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,7 +38,7 @@ const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "streetfood",
-  password: process.env.password,
+  password: "12345678",
   port: 5432,
 });
 db.connect((err) => {
@@ -42,6 +49,7 @@ db.connect((err) => {
   console.log("Connected to database");
 });
 
+app.set('view engine', 'ejs');
 
 app.get("/", (req, res) => {
   res.render("loginregister.ejs");
@@ -121,7 +129,7 @@ app.post("/login",passport.authenticate("local",{
 
 
 app.get("/mainpage", async (req, res) => {
-  console.log(req.user);
+  //console.log(req.user);
 
   if(req.isAuthenticated()){
   try {
@@ -130,7 +138,8 @@ app.get("/mainpage", async (req, res) => {
     );
     const i = result.rows;
     // console.log(i);
-    res.render("index.ejs", { street: i });
+    console.log(req.user);
+    res.render("index.ejs", { street: i,username: req.user.name});
     // res.json(i);
   } catch (error) {
     console.error("Error executing query", error.stack);
@@ -206,12 +215,22 @@ app.get("/bycitybyareabyfood", async (req, res) => {
 
 /////////////////////////////////////////////////////////////
 app.get("/showdetial",async (req,res)=>{
+  const shop = req.query.id;
 
-  const shop = req.query.gotstoreid;
-  
+  try {
+    const result = await db.query(`SELECT * FROM food1 where id = $1;`, [shop]);
 
-  res.render("review.ejs",{id:shop});
+    const i = result.rows;
+    console.log(i);
+    // console.log(i);
+    res.render("review.ejs", { street: i });
+    // res.json(i);
+  } catch (error) {
+    console.error("Error executing query", error.stack);
+    res.status(500).send("Internal Server Error");
+  }
 
+  //res.render("review.ejs",{id:shop});
 });
 
 //////
@@ -224,14 +243,36 @@ app.get("/addrating",async (req,res)=>{
 });
 
 app.post("/rate",async (req,res)=>{
-  
+  try {
 const storeid = req.body.storeid;
+const new_rating= parseFloat(req.body.given_rating);
 console.log(storeid);
-const overrating = req.body.overallrate;
-const query = await db.query(`SELECT overall_rating FROM food1 WHERE id = $1`, [storeid] ) ;
-  console.log(query.rows);
-});
+console.log(new_rating);
+const previous_rating = await db.query(`SELECT overall_rating FROM food1 WHERE id = $1`, [storeid] );
+const previous_rating_value = parseFloat(previous_rating.rows[0].overall_rating);
+console.log("previous-rating", previous_rating_value);
+const average_rating = (new_rating + previous_rating_value)/2;
+console.log("average rating=",average_rating);
 
+const update_query = await db.query(`UPDATE food1 SET overall_rating = $1 WHERE id = $2;`, [average_rating, storeid]);
+
+console.log("upadate_query",update_query);
+res.redirect('/mainpage');
+//res.status(200).send({ success: true, message: "Rating updated successfully" });
+} catch (error) {
+  console.error("Error occurred:", error);
+  res.status(500).send({ success: false, message: "Internal Server Error" });
+}
+
+});
+// ??????????????????????????????????????????????
+app.get("/localtest",async (req,res)=>{
+
+  
+
+  res.render("test.ejs");
+
+});
 ////////////////////////////////////////////////////////////
 app.post("/insert", async (req, res) => {
   try {
@@ -271,8 +312,7 @@ passport.use("local",
   new Strategy(async function verify(username, password, cd){
    
   try {
-    const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [
-      username,]);
+    const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [username,]);
     if (result.rows.length > 0) {
       const user = result.rows[0];
       const storedHashedPassword = user.password;
@@ -305,21 +345,21 @@ passport.use(
   "google",
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: "194492778510-h50r40kvk9gacq633mea5famedlsi4fm.apps.googleusercontent.com",
+      clientSecret:"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",
       callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+      scope: ["profile", "email"]
     },
     async (accessToken, refreshToken, profile, cb) => {
       
       try {
-        console.log(profile);
-        const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [
-          profile.email,]);
+        //console.log(profile);
+        const result = await db.query("SELECT * FROM userloginregister WHERE emailid = $1", [profile.email,]);
         if (result.rows.length === 0) {
           const newUser = await db.query(
-            "INSERT INTO userloginregister (emailid, phonenumber, password) VALUES ($1, $2)",
-            [profile.email, "google phone", "google"]
+            "INSERT INTO userloginregister (emailid, phonenumber, password, name, username, profile_photo) VALUES ($1,$2,$3,$4,$5,$6)",
+            [profile.email, profile.provider, profile.provider, profile.given_name, profile.family_name, profile.picture]
           );
           return cb(null, newUser.rows[0]);
         } else {

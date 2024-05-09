@@ -4,19 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/main.css" />
+
     <title>Document</title>
 </head>
 
 <body>
+    <% street.forEach(street=> { %>
+
     <h4>
-        <%=id%>,
+            <%= street.id%>,
+                <div class="detail">
+                    <li>
+                        <h2>
+                            <%= street.store_name %>,
+                        </h2>
+                    </li>
+                    <li>
+                        <h4><img src="/images/pin.png" alt="" />&nbsp <%= street.city %>,&nbsp <%= street.area %>,</h4>
+                    </li>
+                    <li>
+                        <h3>
+                            <%= street.food_item %>,
+                        </h3>
+                    </li>
+                    <li>
+                        <h3>
+                            <%= street.overall_rating %>,
+                        </h3>
+                    </li>
+                </div>
 
-
+        
     </h4>
-    <form action="addrating" method="get">
-        <input type="hidden" name="storeid" value="<%=id%>">
+<form action="/addrating" method="get">
+    <input type="hidden" name="storeid" value="<%= street.id%>">
         <button>add rating</button>
     </form>
+    <% }) %>
+    
+        <div>
+            <h3>Add Your Reviews</h3>
+            <form action="" method="post">
+                <input type="hidden" name="storeid" value="<%= street.id%>">
+                <textarea name="review" id="" cols="30" rows="10"></textarea>
+                <button type="submit">Add</button>
+            </form>
+        </div>
 </body>
 
 </html>

@@ -9,14 +9,15 @@
 
 <body>
     <h1>
-        rating page
+        rating page <br>
+        store id =
         <%=id%>
     </h1>
 
     <form action="/rate" method="post">
-        <input type="number" name="storeid" value="<%=id%>" placeholder="<%=id%>">
+        <input type="hidden" name="storeid" value="<%=id%>" placeholder="<%=id%>">
         <label for="">overall rating</label>
-        <input type="text" placeholder="out of 5" name="overallrate">
+        <input type="text" placeholder="out of 5" name="given_rating">
         <button type="submit">Submit</button>
     </form>
 
