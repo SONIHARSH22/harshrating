@@ -366,6 +366,10 @@ passport.use(
   })
 );
 
+const callbackURL =
+  process.env.NODE_ENV === "production"
+    ? "https://https://foodrating.onrender.com/auth/google/secrets"
+    : "http://localhost:3000/auth/google/secrets";
 passport.use(
   "google",
   new GoogleStrategy(
