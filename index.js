@@ -366,17 +366,14 @@ passport.use(
   })
 );
 
-const callbackURL =
-  process.env.NODE_ENV === "production"
-    ? "https://foodrating.onrender.com/auth/google/secrets"
-    : "http://localhost:3000/auth/google/secrets";
+
 passport.use(
   "google",
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: callbackURL,
+      callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },
