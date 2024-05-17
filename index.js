@@ -44,7 +44,7 @@ app.use(passport.session());
 // });
 
 let db;
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   // Use Render database configuration
   db = new pg.Client({
     connectionString: process.env.RENDER_POSTGRESQL_URL,
@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === 'production') {
     user: "postgres",
     host: "localhost",
     database: "streetfood",
-    password: process.env.LOCAL_DB_PASSWORD, // Set this environment variable locally
+    password: process.env.password, // Set this environment variable locally
     port: 5432,
   });
 }
@@ -366,14 +366,14 @@ passport.use(
   })
 );
 
-
 passport.use(
   "google",
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
+      // callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
+      callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },

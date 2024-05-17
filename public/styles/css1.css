@@ -1,0 +1,53 @@
+/* Ensure the body and html take full height */
+body,
+html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Custom container to center content */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Card and form adjustments */
+.card {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Ensure form inputs take full width on small screens */
+@media (max-width: 576px) {
+    .form-control {
+        width: 100%;
+    }
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+@media (min-width: 576px) {
+    h1 {
+        font-size: 3rem;
+    }
+}
