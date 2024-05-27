@@ -7,8 +7,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import env from "dotenv";
 import GoogleStrategy from "passport-google-oauth2";
-
-
+import cron from "node-cron";
 
 const app = express();
 const port = 3000;
@@ -18,14 +17,16 @@ env.config();
 // Set session expiration time to 30 minutes (adjust as needed)
 const sessionExpirationTime = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-app.use( session({
-  secret:"TOPSECRETWORD",
-  resave: false,
-  saveUninitialized:true,
-  cookie: {
-    maxAge: sessionExpirationTime
-  }
-}));
+app.use(
+  session({
+    secret: "TOPSECRETWORD",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: sessionExpirationTime,
+    },
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -33,7 +34,6 @@ app.use(express.static("public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // const db = new pg.Client({
 //   user: "postgres",
@@ -238,10 +238,15 @@ app.get("/showdetial", async (req, res) => {
 
   try {
     const result = await db.query(`SELECT * FROM food1 where id = $1;`, [shop]);
+    const givereviews = await db.query(
+      `SELECT * FROM reviews1 WHERE shop_id = $1 ORDER BY created_at::date DESC, created_at DESC;`,
+      [shop]
+    );
 
     const i = result.rows;
+    const gotfeedback = givereviews.rows;
     console.log(i);
-    res.render("review.ejs", { street: i });
+    res.render("review.ejs", { street: i, feedback: gotfeedback });
     // res.json(i);
   } catch (error) {
     console.error("Error executing query", error.stack);
@@ -251,43 +256,6 @@ app.get("/showdetial", async (req, res) => {
   //res.render("review.ejs",{id:shop});
 });
 
-//////
-app.get("/addrating", async (req, res) => {
-  const shop = req.query.storeid;
-
-  res.render("rating.ejs", { id: shop });
-});
-
-app.post("/rate", async (req, res) => {
-  try {
-    const storeid = req.body.storeid;
-    const new_rating = parseFloat(req.body.given_rating);
-    console.log(storeid);
-    console.log(new_rating);
-    const previous_rating = await db.query(
-      `SELECT overall_rating FROM food1 WHERE id = $1`,
-      [storeid]
-    );
-    const previous_rating_value = parseFloat(
-      previous_rating.rows[0].overall_rating
-    );
-    console.log("previous-rating", previous_rating_value);
-    const average_rating = (new_rating + previous_rating_value) / 2;
-    console.log("average rating=", average_rating);
-
-    const update_query = await db.query(
-      `UPDATE food1 SET overall_rating = $1 WHERE id = $2;`,
-      [average_rating, storeid]
-    );
-
-    console.log("upadate_query", update_query);
-    res.redirect("/mainpage");
-    //res.status(200).send({ success: true, message: "Rating updated successfully" });
-  } catch (error) {
-    console.error("Error occurred:", error);
-    res.status(500).send({ success: false, message: "Internal Server Error" });
-  }
-});
 // ??????????????????????????????????????????????
 app.post("/addreviews", async (req, res) => {
   try {
@@ -297,65 +265,21 @@ app.post("/addreviews", async (req, res) => {
     const rate = req.body["rate"];
     const userid = req.user.srno;
 
-    console.log(review);
-    console.log(storeid);
-    console.log(username);
-    console.log(rate);
-    console.log(userid);
+    // console.log(review);
+    // console.log(storeid);
+    // console.log(username);
+    // console.log(rate);
+    // console.log(userid);
     const reviewquery =
       "INSERT INTO reviews1 (shop_id, review, rating, user_name,user_id) VALUES ($1, $2, $3, $4, $5)";
-    db.query(
-      reviewquery,
-      [storeid, review, rate, username, userid],
-      (error, results, fields) => {
-        if (error) {
-          console.error("Error inserting data:", error);
-          // Handle error
-        } else {
-          console.log("Data inserted successfully:", results);
-          // Handle success
-        }
-      }
-    );
-  } catch {}
-});
-////////////////////////////////////////////////////////////
-app.post("/insert", async (req, res) => {
-  try {
-    const cityname = req.body["city"];
-    const cityarea = req.body["area"];
-    const cityfood = req.body["fooditem"];
-    const store = req.body["storename"];
-    const rating = req.body["rating"];
-
-    console.log(cityarea);
-    console.log(cityfood);
-    console.log(cityname);
-    console.log(store);
-    console.log(rating);
-
-    // Assuming you have a connection to your MySQL database named `connection`
-
-    const query =
-      "INSERT INTO food1 (store_name, city, area, food_item, overall_rating) VALUES ($1, $2, $3, $4, $5)";
-    db.query(
-      query,
-      [store, cityname, cityarea, cityfood, rating],
-      (error, results, fields) => {
-        if (error) {
-          console.error("Error inserting data:", error);
-          // Handle error
-        } else {
-          console.log("Data inserted successfully:", results);
-          // Handle success
-        }
-      }
-    );
+    db.query(reviewquery, [storeid, review, rate, username, userid]);
+    res.redirect(`/showdetial?id=${storeid}`);
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).send("Internal Server Error");
   }
 });
+////////////////////////////////////////////////////////////
 
 passport.use(
   "local",
@@ -398,8 +322,8 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
-      //callbackURL: "http://localhost:3000/auth/google/secrets",
+      //callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
+      callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },
@@ -440,6 +364,29 @@ passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
 
+async function updateOverallRating() {
+  try {
+    const result = await db.query(`
+      UPDATE food1
+      SET overall_rating = subquery.avg_rating
+      FROM (
+        SELECT shop_id, AVG(rating) AS avg_rating
+        FROM reviews
+        GROUP BY shop_id
+      ) AS subquery
+      WHERE food1.id = subquery.shop_id;
+    `);
+    console.log("Overall ratings updated successfully:");
+  } catch (error) {
+    console.error("Error updating overall ratings:", error);
+  }
+}
+
+// Schedule the task to run every 12 hours
+cron.schedule("0 */12 * * *", () => {
+  console.log("Running scheduled task to update overall ratings...");
+  updateOverallRating();
+});
 
 
 app.listen(port, () => {

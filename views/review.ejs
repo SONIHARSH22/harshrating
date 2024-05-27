@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
+    <link rel="stylesheet" href="/styles/reviews.css" />
     <title>Document</title>
 </head>
 
 <body>
-    <% street.forEach(street=> { %>
 
-    <h4>
-            <%= street.id%>,
+    <% street.forEach(street=> { %>
+        <div class="store-details">
+            <h4>
                 <div class="detail">
                     <li>
                         <h2>
@@ -34,25 +35,93 @@
                         </h3>
                     </li>
                 </div>
-
+            </h4>
         
-    </h4>
-<form action="/addrating" method="get">
-    <input type="hidden" name="storeid" value="<%= street.id%>">
-        <button>add rating</button>
-    </form>
-    <% }) %>
-    
-        <!-- <div>
-            <h3>Add Your Reviews</h3>
-            <form action="/addreviews" method="post">
-                <input type="hidden" name="storeid" value="<%= street.id%>">
-                <textarea name="review" id="" cols="30" rows="10"></textarea>
-                <input type="text" name="rate">
+            <div class="review-form">
+                <h3>Add Your Reviews</h3>
+                <form action="/addreviews" method="post" id="reviewForm">
+                    <input type="hidden" name="storeid" value="<%= street.id%>">
+                    <textarea name="review" cols="30" rows="10" placeholder="Write your review here..."></textarea>
+                    <input type="text" name="rate" id="rate" placeholder="Rating (1-5)">
+                    <button type="submit">Add</button>
+                    </form>
+                    </div>
 
-                <button type="submit">Add</button>
+    <!-- <button id="showFormButton">Add Reviews</button>
+        
+        <div class="review-form" id="reviewFormContainer">
+            <h3>Add Your Reviews</h3>
+            <form action="/addreviews" method="post" id="reviewForm">
+                <input type="hidden" name="storeid" value="<%= street.id %>">
+                <textarea name="review" cols="30" rows="10" placeholder="Write your review here..."></textarea>
+                <input type="text" name="rate" id="rate" placeholder="Rating (1-5)">
+            <button type="submit">Add</button>
             </form>
-        </div> -->
+    </div> -->
+</div>
+<% }) %>
+
+    <div class="reviews">
+        <% if (feedback.length===0) { %>
+            <div class="no-reviews">Be the first to review it</div>
+            <% } else { %>
+                <% feedback.forEach((review, index)=> { %>
+                    <div class="review <%= index >= 2 ? 'hidden' : '' %>">
+                        <li>
+                            <%= review.user_name %>
+                        </li>
+                        <li>
+                            <%= review.rating %>
+                        </li>
+                        <p>
+                            <%= review.review %>
+                        </p>
+                    </div>
+                    <% }) %>
+                        <% if (feedback.length> 2) { %>
+                            <button class="show-more" onclick="showMoreReviews()">Show More</button>
+                            <% } %>
+                                <% } %>
+
+    </div>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', function (event) {
+            const ratingInput = document.getElementById('rate');
+            const rating = parseFloat(ratingInput.value);
+            if (rating < 1 || rating > 5) {
+                event.preventDefault();
+                alert('Please enter a valid rating between 1 and 5.');
+
+            }
+        });
+    </script>
+
+    <script>
+        function showMoreReviews() {
+            const hiddenReviews = document.querySelectorAll('.review.hidden');
+            hiddenReviews.forEach(review => {
+                review.classList.remove('hidden');
+            });
+            document.querySelector('.show-more').style.display = 'none';
+        }
+    </script>
+    <!-- <script>
+                    document.getElementById('showFormButton').addEventListener('click', function() {
+                        document.getElementById('reviewFormContainer').style.display = 'block';
+                        this.style.display = 'none'; // Hide the "Add Reviews" button
+                    });
+            
+                    // document.getElementById('reviewForm').addEventListener('submit', function(event) {
+                    //     const rateInput = document.getElementById('rate').value;
+                    //     const rating = parseFloat(rateInput);
+            
+                    //     if (isNaN(rating) || rating > 5) {
+                    //         alert('Rating must be a number between 1 and 5.');
+                    //         event.preventDefault(); // Prevent form submission
+                    //     }
+                    // });
+                </script> -->
 </body>
 
 </html>

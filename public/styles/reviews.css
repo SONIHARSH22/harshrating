@@ -1,0 +1,165 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Store Details Styles */
+.store-details {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+.store-details .detail li {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.store-details h2,
+.store-details h3,
+.store-details h4 {
+    margin: 5px 0;
+}
+
+.store-details img {
+    vertical-align: middle;
+}
+
+.add-rating-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-rating-button:hover {
+    background-color: #0056b3;
+}
+
+/* Review Form Styles */
+.review-form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    /* display: none; */
+    /* Ensure padding doesn't affect width */
+}
+
+.review-form textarea,
+.review-form input {
+    width: calc(100% - 40px);
+    /* Adjusted width to accommodate padding */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+.review-form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.review-form button:hover {
+    background-color: #218838;
+}
+
+/* Reviews Styles */
+li {
+    list-style: none;
+}
+
+.reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.review.hidden {
+    display: none;
+}
+
+.review li:nth-child(1) {
+    font-weight: bold;
+}
+
+.review li:nth-child(2) {
+    font-weight: bold;
+}
+
+.review p {
+    margin-top: 10px;
+}
+
+.no-reviews {
+    font-style: italic;
+    color: #666;
+}
+
+.show-more {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    /* Reduced padding for smaller size */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100px;
+    /* Adjusted font size */
+    margin: 0 auto;
+    /* Center horizontally */
+    display: block;
+    /* Ensure block-level element behavior */
+
+}
+
+.show-more:hover {
+    background-color: #0056b3;
+}
+
+
+/* Media Queries for Responsive Design */
+@media only screen and (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .store-details,
+    .review-form,
+    .review {
+        padding: 15px;
+    }
+}

@@ -61,19 +61,6 @@
             </div>
         <% }) %>
     </div>
-<script>
-    localStorage.setItem('storedCity', mandvi)
-    // Function to get stored city from localStorage
-    function getStoredCity() {
-        return localStorage.getItem('storedCity') || 'mandvi';
-    }
-
-    // Function to set city in localStorage when form is submitted
-    document.querySelector('form').addEventListener('submit', function (event) {
-        var cityInput = document.getElementById('cityInput');
-        localStorage.setItem('storedCity', cityInput.value);
-    });
-</script>
 
 <script>
     function redirectToDetail(storeId) {
