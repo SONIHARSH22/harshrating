@@ -153,7 +153,7 @@ app.post(
 );
 
 app.get("/mainpage", async (req, res) => {
-  //console.log(req.user);
+  console.log(req.user);
 
   if (req.isAuthenticated()) {
     try {
@@ -162,7 +162,7 @@ app.get("/mainpage", async (req, res) => {
       );
       const i = result.rows;
       // console.log(i);
-      console.log(req.user);
+      //console.log(req.user);
       res.render("index.ejs", { street: i, username: req.user.name });
       // res.json(i);
     } catch (error) {
@@ -241,7 +241,6 @@ app.get("/showdetial", async (req, res) => {
 
     const i = result.rows;
     console.log(i);
-    // console.log(i);
     res.render("review.ejs", { street: i });
     // res.json(i);
   } catch (error) {
@@ -290,8 +289,35 @@ app.post("/rate", async (req, res) => {
   }
 });
 // ??????????????????????????????????????????????
-app.get("/localtest", async (req, res) => {
-  res.render("test.ejs");
+app.post("/addreviews", async (req, res) => {
+  try {
+    const review = req.body["review"];
+    const storeid = req.body["storeid"];
+    const username = req.user.name;
+    const rate = req.body["rate"];
+    const userid = req.user.srno;
+
+    console.log(review);
+    console.log(storeid);
+    console.log(username);
+    console.log(rate);
+    console.log(userid);
+    const reviewquery =
+      "INSERT INTO reviews1 (shop_id, review, rating, user_name,user_id) VALUES ($1, $2, $3, $4, $5)";
+    db.query(
+      reviewquery,
+      [storeid, review, rate, username, userid],
+      (error, results, fields) => {
+        if (error) {
+          console.error("Error inserting data:", error);
+          // Handle error
+        } else {
+          console.log("Data inserted successfully:", results);
+          // Handle success
+        }
+      }
+    );
+  } catch {}
 });
 ////////////////////////////////////////////////////////////
 app.post("/insert", async (req, res) => {
@@ -373,7 +399,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
-      // callbackURL: "http://localhost:3000/auth/google/secrets",
+      //callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },
@@ -413,6 +439,8 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
