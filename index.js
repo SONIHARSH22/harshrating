@@ -174,13 +174,7 @@ app.get("/mainpage", async (req, res) => {
   }
 });
 
-app.get("/add", async (req, res) => {
-  try {
-    res.render("add.ejs");
-  } catch (error) {
-    res.status(500).send("Internal Server Error");
-  }
-});
+
 
 //getting all top rated by city name by area name by food/menu
 
@@ -225,7 +219,7 @@ app.get("/bycitybyareabyfood", async (req, res) => {
     const i = result.rows;
 
     // Send response with the retrieved data
-    res.render("index.ejs", { street: i });
+    res.render("index.ejs", { street: i, username: req.user.name });
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).send("Internal Server Error");
@@ -322,8 +316,8 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      //callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
-      callbackURL: "http://localhost:3000/auth/google/secrets",
+      callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
+      //callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },
@@ -371,7 +365,7 @@ async function updateOverallRating() {
       SET overall_rating = subquery.avg_rating
       FROM (
         SELECT shop_id, AVG(rating) AS avg_rating
-        FROM reviews
+        FROM reviews1
         GROUP BY shop_id
       ) AS subquery
       WHERE food1.id = subquery.shop_id;

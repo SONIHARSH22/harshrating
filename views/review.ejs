@@ -37,27 +37,18 @@
                 </div>
             </h4>
         
-            <div class="review-form">
-                <h3>Add Your Reviews</h3>
-                <form action="/addreviews" method="post" id="reviewForm">
-                    <input type="hidden" name="storeid" value="<%= street.id%>">
-                    <textarea name="review" cols="30" rows="10" placeholder="Write your review here..."></textarea>
-                    <input type="text" name="rate" id="rate" placeholder="Rating (1-5)">
-                    <button type="submit">Add</button>
-                    </form>
-                    </div>
-
-    <!-- <button id="showFormButton">Add Reviews</button>
-        
+        <button id="showFormButton" class="top-right-button">Add Reviews</button>
         <div class="review-form" id="reviewFormContainer">
+            <button id="closeFormButton"><img src="/images/remove.png" alt="Close"></button>
             <h3>Add Your Reviews</h3>
             <form action="/addreviews" method="post" id="reviewForm">
                 <input type="hidden" name="storeid" value="<%= street.id %>">
                 <textarea name="review" cols="30" rows="10" placeholder="Write your review here..."></textarea>
                 <input type="text" name="rate" id="rate" placeholder="Rating (1-5)">
             <button type="submit">Add</button>
+            
             </form>
-    </div> -->
+        </div>
 </div>
 <% }) %>
 
@@ -89,7 +80,7 @@
         document.getElementById('reviewForm').addEventListener('submit', function (event) {
             const ratingInput = document.getElementById('rate');
             const rating = parseFloat(ratingInput.value);
-            if (rating < 1 || rating > 5) {
+            if (rating === '' || isNaN(rating) || rating < 1 || rating > 5) {
                 event.preventDefault();
                 alert('Please enter a valid rating between 1 and 5.');
 
@@ -106,22 +97,17 @@
             document.querySelector('.show-more').style.display = 'none';
         }
     </script>
-    <!-- <script>
-                    document.getElementById('showFormButton').addEventListener('click', function() {
-                        document.getElementById('reviewFormContainer').style.display = 'block';
-                        this.style.display = 'none'; // Hide the "Add Reviews" button
-                    });
-            
-                    // document.getElementById('reviewForm').addEventListener('submit', function(event) {
-                    //     const rateInput = document.getElementById('rate').value;
-                    //     const rating = parseFloat(rateInput);
-            
-                    //     if (isNaN(rating) || rating > 5) {
-                    //         alert('Rating must be a number between 1 and 5.');
-                    //         event.preventDefault(); // Prevent form submission
-                    //     }
-                    // });
-                </script> -->
+    <script>
+        document.getElementById('showFormButton').addEventListener('click', function () {
+            document.getElementById('reviewFormContainer').style.display = 'block';
+            this.style.display = 'none'; // Hide the "Add Reviews" button
+        });
+
+            document.getElementById('closeFormButton').addEventListener('click', function () {
+                document.getElementById('reviewFormContainer').style.display = 'none';
+                document.getElementById('showFormButton').style.display = 'block'; // Show the "Add Reviews" button again
+            });
+        </script>
 </body>
 
 </html>

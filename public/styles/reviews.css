@@ -51,7 +51,34 @@ body {
 .add-rating-button:hover {
     background-color: #0056b3;
 }
+.review-form {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
 
+#reviewFormContainer {
+    display: none;
+}
+
+#closeFormButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#closeFormButton .fas {
+    color: #333;
+}
 /* Review Form Styles */
 .review-form {
     background-color: #fff;
@@ -60,8 +87,11 @@ body {
     padding: 20px;
     margin-bottom: 20px;
     box-sizing: border-box;
-    /* display: none; */
+    display: none;
     /* Ensure padding doesn't affect width */
+}
+#reviewFormContainer {
+    display: none;
 }
 
 .review-form textarea,
@@ -161,5 +191,71 @@ li {
     .review-form,
     .review {
         padding: 15px;
+    }
+}
+/* ....................................................... */
+/* General styles for the review form container */
+
+
+/* Hide the review form container by default */
+
+
+/* Style the "Add Reviews" button */
+.top-right-button {
+
+
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Add some hover effect to the button */
+.top-right-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style the close button inside the review form */
+
+
+/* Ensure the close button image is the right size */
+#closeFormButton img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Make the store details relative to contain the absolute positioned button */
+.store-details {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .top-right-button {
+        position: absolute;
+        padding: 8px 16px;
+        font-size: 12px;
+        top: 35px;
+        right: 17px;
+    }
+
+    .review-form {
+        padding: 10px;
+    }
+
+    #closeFormButton {
+        font-size: 16px;
+    }
+
+    #closeFormButton img {
+        width: 16px;
+        height: 16px;
     }
 }
