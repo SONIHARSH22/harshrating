@@ -14,11 +14,6 @@
     <h3>wellcome <%=username %>
     </h3>
 
-
-    <!-- <a href="/add"><button>want to add store</button></a> -->
-
-    
-
     <form action="/bycitybyareabyfood" method="get" onsubmit="toLowerCaseInputs()">
         <h2>
             Search By:
@@ -31,9 +26,15 @@
                 <option value="delhi">Delhi</option>
                 <!-- Add more options as needed -->
             </select>
-            <input type="text" name="fooditem" placeholder="Enter Food Item" />,
-            <input type="text" name="area" placeholder="Your City Area" />,
-            <input type="text" name="storename" placeholder="Store Name" />,
+            <select name="area" id="areaInput">
+                <option value="">Select Area</option>
+            </select>
+            <select name="fooditem" id="fooditemInput">
+                <option value="">Select Food Item</option>
+            </select>
+            <select name="storename" id="storenameInput">
+                <option value="">Select Store Name</option>
+            </select>
             <button type="submit">Submit</button>
         </h2>
     </form>
@@ -49,55 +50,102 @@
                         <div class="supposeimage">
                             <p>.</p>
                         </div>
-        
+
                         <div class="detail">
                             <li>
-                            <h2>
-                                <%= element.store_name %>,
-                            </h2>
+                                <h2>
+                                    <%= element.store_name %>,
+                                </h2>
                             </li>
                             <li>
-                            <h4>
-                                <img src="/images/pin.png" alt="" />&nbsp <%= element.city %>,&nbsp <%= element.area %>,
-                            </h4>
-                        </li>
-                        <li>
-                            <h3>
-                                <%= element.food_item %>,
-                            </h3>
-                        </li>
-                        <li>
-                            <h3>
-                                <%= element.overall_rating %>,
-                            </h3>
-                        </li>
-                    </div>
+                                <h4>
+                                    <img src="/images/pin.png" alt="" />&nbsp <%= element.city %>,&nbsp <%= element.area %>,
+                                            </h4>
+                                            </li>
+                                            <li>
+                                                <h3>
+                                                    <%= element.food_item %>,
+                                                </h3>
+                                            </li>
+                                            <li>
+                                                <h3>
+                                                    <%= element.overall_rating %>,
+                                                </h3>
+                                            </li>
+                                            </div>
                     </div>
                     <% }) %>
-        <% } %>
+                        <% } %>
     </div>
 
-<script>
-    function redirectToDetail(storeId) {
-        // Redirect to the detail page with the storeId as a parameter
-        window.location.href = '/showdetial?id=' + encodeURIComponent(storeId);
-    }
-</script>
-<script>
-    function toLowerCaseInputs() {
-        // Get all input fields
-        var cityInput = document.getElementById('cityInput');
-        var foodItemInput = document.getElementsByName('fooditem')[0];
-        var areaInput = document.getElementsByName('area')[0];
-        var storeNameInput = document.getElementsByName('storename')[0];
+    <script>
+        function redirectToDetail(storeId) {
+            // Redirect to the detail page with the storeId as a parameter
+            window.location.href = '/showdetial?id=' + encodeURIComponent(storeId);
+        }
+    </script>
 
-        // Convert their values to lowercase
-        cityInput.value = cityInput.value.toLowerCase();
-        foodItemInput.value = foodItemInput.value.toLowerCase();
-        areaInput.value = areaInput.value.toLowerCase();
-        storeNameInput.value = storeNameInput.value.toLowerCase();
-    }
-</script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const cityInput = document.getElementById('cityInput');
+                const savedCity = localStorage.getItem('selectedCity');
+                if (savedCity) {
+                    cityInput.value = savedCity;
+                    fetchDataAndPopulate(savedCity);
+                }
+
+                cityInput.addEventListener('change', function () {
+                    const city = this.value;
+                    localStorage.setItem('selectedCity', city);
+                    fetchDataAndPopulate(city);
+                });
+            });
+
+            function fetchDataAndPopulate(city) {
+                const areaInput = document.getElementById('areaInput');
+                const fooditemInput = document.getElementById('fooditemInput');
+                const storenameInput = document.getElementById('storenameInput');
+
+                if (city) {
+                    fetch(`/fetchData?city=${city}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            populateSelect(areaInput, data.areas, 'Select Area');
+                            populateSelect(fooditemInput, data.fooditems, 'Select Food Item');
+                            populateSelect(storenameInput, data.storename, 'Select Store Name');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                        });
+                } else {
+                    clearSelect(areaInput, 'Select Area');
+                    clearSelect(fooditemInput, 'Select Food Item');
+                    clearSelect(storenameInput, 'Select Store Name');
+                }
+            }
+
+            function populateSelect(selectElement, options, placeholder) {
+                selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+                const uniqueOptions = [...new Set(options)]; // Remove duplicates
+                uniqueOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.textContent = option;
+                    selectElement.appendChild(opt);
+                });
+            }
+
+            function clearSelect(selectElement, placeholder) {
+                selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+            }
+
+            function toLowerCaseInputs() {
+                    const inputs = document.querySelectorAll('input[type="text"]');
+                    inputs.forEach(input => {
+                        input.value = input.value.toLowerCase();
+                    });
+                }
+            </script>
 </body>
 
 </html>

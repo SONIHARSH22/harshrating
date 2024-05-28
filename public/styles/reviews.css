@@ -142,15 +142,18 @@ li {
 }
 
 .review li:nth-child(1) {
-    font-weight: bold;
+    font-style: italic;
 }
 
 .review li:nth-child(2) {
-    font-weight: bold;
+    font-style: italic;
 }
 
+
 .review p {
+    font-weight: 500;
     margin-top: 10px;
+
 }
 
 .no-reviews {

@@ -59,9 +59,11 @@
                 <% feedback.forEach((review, index)=> { %>
                     <div class="review <%= index >= 2 ? 'hidden' : '' %>">
                         <li>
-                            <%= review.user_name %>
+                        <img src="/images/user.png" alt="user">
+                        <%= review.user_name %>
                         </li>
                         <li>
+                            <img src="/images/star.png" alt="rate">
                             <%= review.rating %>
                         </li>
                         <p>

@@ -86,7 +86,9 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const email = req.body.username;
+  const email = req.body.email;
+  const name = req.body.username;
+  const username = req.body.name;
   const password = req.body.password;
   const phoneno = req.body.number;
 
@@ -107,8 +109,8 @@ app.post("/register", async (req, res) => {
         } else {
           console.log("Hashed Password:", hash);
           const result = await db.query(
-            "INSERT INTO userloginregister (emailid,phonenumber,password) VALUES ($1, $2, $3) RETURNING *",
-            [email, phoneno, hash]
+            "INSERT INTO userloginregister (emailid,password,name,username,phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            [email, hash, name, username, phoneno]
           );
           console.log(result);
 
@@ -173,8 +175,6 @@ app.get("/mainpage", async (req, res) => {
     return res.redirect("/login");
   }
 });
-
-
 
 //getting all top rated by city name by area name by food/menu
 
@@ -241,7 +241,6 @@ app.get("/showdetial", async (req, res) => {
     const gotfeedback = givereviews.rows;
     console.log(i);
     res.render("review.ejs", { street: i, feedback: gotfeedback });
-    // res.json(i);
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).send("Internal Server Error");
@@ -375,6 +374,36 @@ async function updateOverallRating() {
     console.error("Error updating overall ratings:", error);
   }
 }
+
+app.get("/fetchData", async (req, res) => {
+  const city = req.query.city;
+
+  try {
+    const areasQuery = await db.query(
+      "SELECT area FROM food1 WHERE city = $1",
+      [city]
+    );
+    const foodItemsQuery = await db.query(
+      "SELECT food_item FROM food1 WHERE city = $1",
+      [city]
+    );
+    const storeNamesQuery = await db.query(
+      "SELECT store_name FROM food1 WHERE city = $1",
+      [city]
+    );
+
+    const data = {
+      areas: areasQuery.rows.map((row) => row.area),
+      fooditems: foodItemsQuery.rows.map((row) => row.food_item),
+      storename: storeNamesQuery.rows.map((row) => row.store_name),
+    };
+
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).send("Server Error");
+  }
+});
 
 // Schedule the task to run every 12 hours
 cron.schedule("0 */12 * * *", () => {
