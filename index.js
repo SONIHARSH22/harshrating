@@ -270,7 +270,7 @@ app.post("/addreviews", async (req, res) => {
     res.redirect(`/showdetial?id=${storeid}`);
   } catch (error) {
     console.error("Error executing query", error.stack);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal Server Error", error);
   }
 });
 ////////////////////////////////////////////////////////////
