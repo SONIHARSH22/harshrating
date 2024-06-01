@@ -14,9 +14,11 @@
     <h3>welcome <%=username %>
     </h3>
 
-    <form action="/bycitybyareabyfood" method="get" onsubmit="toLowerCaseInputs()">
-        <h2>
-            Search By:
+    <form action="/bycitybyareabyfood" method="get" class="search-bar" onsubmit="toLowerCaseInputs()">
+    
+        <span class="span">Search By:</span>
+        <h2 class="search-bar1">
+            <div class="verticalline">
             <select name="city" id="cityInput">
                 <option value="">Select City</option>
                 <option value="mumbai">Mumbai</option>
@@ -26,14 +28,26 @@
                 <option value="delhi">Delhi</option>
                 <!-- Add more options as needed -->
             </select>
-            <select name="area" id="areaInput">
+        </div>
+        <div class="verticalline">
+            <select name="selectby" id="selectByInput">
+                <option value="">Search By</option>
+                <option value="area">Area</option>
+                <option value="fooditem">Food Dish</option>
+                <option value="store">Store</option>
+            </select>
+        </div>
+        <select name="area" id="areaInput" class="hidden">
                 <option value="">Select Area</option>
             </select>
-            <select name="fooditem" id="fooditemInput">
+            <select name="fooditem" id="fooditemInput" class="hidden">
                 <option value="">Select Food Item</option>
             </select>
-            <select name="storename" id="storenameInput">
+            <select name="storename" id="storenameInput" class="hidden">
                 <option value="">Select Store Name</option>
+            </select>
+            <select name="extra" id="extra" class="hidden">
+                <option value="">Select by</option>
             </select>
             <button type="submit">Submit</button>
         </h2>
@@ -85,66 +99,104 @@
         }
     </script>
 
-    <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const cityInput = document.getElementById('cityInput');
-                const savedCity = localStorage.getItem('selectedCity');
-                if (savedCity) {
-                    cityInput.value = savedCity;
-                    fetchDataAndPopulate(savedCity);
-                }
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const cityInput = document.getElementById('cityInput');
+                    const selectByInput = document.getElementById('selectByInput');
+                    const areaInput = document.getElementById('areaInput');
+                    const fooditemInput = document.getElementById('fooditemInput');
+                    const storenameInput = document.getElementById('storenameInput');
 
-                cityInput.addEventListener('change', function () {
-                    const city = this.value;
-                    localStorage.setItem('selectedCity', city);
-                    fetchDataAndPopulate(city);
-                });
-            });
+                    // Set initial visibility based on saved city
+                    const savedCity = localStorage.getItem('selectedCity');
+                    if (savedCity) {
+                        cityInput.value = savedCity;
+                        fetchDataAndPopulate(savedCity);
+                    }
 
-            function fetchDataAndPopulate(city) {
-                const areaInput = document.getElementById('areaInput');
-                const fooditemInput = document.getElementById('fooditemInput');
-                const storenameInput = document.getElementById('storenameInput');
+                    // Set initial value for selectByInput
+                    const savedSelectBy = localStorage.getItem('selectedSelectBy');
+                    if (savedSelectBy) {
+                        selectByInput.value = savedSelectBy;
+                        updateVisibility(savedSelectBy);
+                    }
 
-                if (city) {
-                    fetch(`/fetchData?city=${city}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            populateSelect(areaInput, data.areas, 'Select Area');
-                            populateSelect(fooditemInput, data.fooditems, 'Select Food Item');
-                            populateSelect(storenameInput, data.storename, 'Select Store Name');
-                        })
-                        .catch(error => {
-                            console.error('Error fetching data:', error);
-                        });
-                } else {
-                    clearSelect(areaInput, 'Select Area');
-                    clearSelect(fooditemInput, 'Select Food Item');
-                    clearSelect(storenameInput, 'Select Store Name');
-                }
-            }
-
-            function populateSelect(selectElement, options, placeholder) {
-                selectElement.innerHTML = `<option value="">${placeholder}</option>`;
-                const uniqueOptions = [...new Set(options)]; // Remove duplicates
-                uniqueOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    selectElement.appendChild(opt);
-                });
-            }
-
-            function clearSelect(selectElement, placeholder) {
-                selectElement.innerHTML = `<option value="">${placeholder}</option>`;
-            }
-
-            function toLowerCaseInputs() {
-                    const inputs = document.querySelectorAll('input[type="text"]');
-                    inputs.forEach(input => {
-                        input.value = input.value.toLowerCase();
+                    // Event listener for city change
+                    cityInput.addEventListener('change', function () {
+                        const city = this.value;
+                        localStorage.setItem('selectedCity', city);
+                        fetchDataAndPopulate(city);
                     });
-                }
+
+                    // Event listener for selectBy change
+                    selectByInput.addEventListener('change', function () {
+                        const selectedValue = this.value;
+                        localStorage.setItem('selectedSelectBy', selectedValue);
+                        updateVisibility(selectedValue);
+                    });
+
+                    function fetchDataAndPopulate(city) {
+                        if (city) {
+                            fetch(`/fetchData?city=${city}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    populateSelect(areaInput, data.areas, 'Select Area');
+                                    populateSelect(fooditemInput, data.fooditems, 'Select Food Item');
+                                    populateSelect(storenameInput, data.storename, 'Select Store Name');
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching data:', error);
+                                });
+                        } else {
+                            clearSelect(areaInput, 'Select Area');
+                            clearSelect(fooditemInput, 'Select Food Item');
+                            clearSelect(storenameInput, 'Select Store Name');
+                        }
+                    }
+
+                    function populateSelect(selectElement, options, placeholder) {
+                        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+                        const uniqueOptions = [...new Set(options)]; // Remove duplicates
+                        uniqueOptions.forEach(option => {
+                            const opt = document.createElement('option');
+                            opt.value = option;
+                            opt.textContent = option;
+                            selectElement.appendChild(opt);
+                        });
+                    }
+
+                    function clearSelect(selectElement, placeholder) {
+                        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+                    }
+
+                    function toLowerCaseInputs() {
+                        const inputs = document.querySelectorAll('input[type="text"]');
+                        inputs.forEach(input => {
+                            input.value = input.value.toLowerCase();
+                        });
+                    }
+
+                    function updateVisibility(selectedValue) {
+                        areaInput.classList.add('hidden');
+                        fooditemInput.classList.add('hidden');
+                        storenameInput.classList.add('hidden');
+                        extra.classList.add('hidden');
+
+                        if (selectedValue === 'area') {
+                            areaInput.classList.remove('hidden');
+                        } else if (selectedValue === 'fooditem') {
+                            fooditemInput.classList.remove('hidden');
+                        } else if (selectedValue === 'store') {
+                            storenameInput.classList.remove('hidden');
+                        }
+                        else {
+                            extra.classList.remove('hidden');
+                        }
+                    }
+
+                    // Initialize visibility on page load
+                    updateVisibility(selectByInput.value);
+                });
             </script>
 </body>
 
