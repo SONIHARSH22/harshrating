@@ -406,7 +406,7 @@ app.get("/fetchData", async (req, res) => {
 });
 
 // Schedule the task to run every 12 hours
-cron.schedule("0 */12 * * *", () => {
+cron.schedule("*/3 * * * *", () => {
   console.log("Running scheduled task to update overall ratings...");
   updateOverallRating();
 });
