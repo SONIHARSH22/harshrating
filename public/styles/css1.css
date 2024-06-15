@@ -10,9 +10,12 @@ html {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    /* justify-content: center; */
+    /* align-items: center; */
     height: 100%;
+}
+.google{
+    margin-top: 10px;
 }
 
 /* Card and form adjustments */

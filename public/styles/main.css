@@ -266,3 +266,46 @@ body {
     gap: 90px;
 }
 }
+
+@media (max-width: 499px) {
+
+    h2,
+    h4,
+    h3 {
+        font-size: 1.2em;
+    }
+
+    .outer {
+        margin: 10px;
+    }
+.search-bar1 {
+    margin-top: 30px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 60px;
+}
+}
+@media (max-width: 321px) {
+
+    h2,
+    h4,
+    h3 {
+        font-size: 1.2em;
+    }
+
+    .outer {
+        margin: 10px;
+    }
+.search-bar1 {
+    margin-top: 30px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+}
+}
