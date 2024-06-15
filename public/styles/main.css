@@ -1,5 +1,7 @@
-h1 {
-    color: aquamarine;
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 900px;
 }
 
 .mainouter {
@@ -11,13 +13,38 @@ h1 {
     justify-content: center;
 }
 
+.profileimg {
+    border-radius: 50%;
+    height: 27px;
+    width: 27px;
+    margin-top: 18px;
+}
+
+.navbarprofile {
+    margin-top: 10px;
+    gap: 10px;
+    display: flex;
+}
+
+.Flover {
+    font-weight: 700;
+}
+
+.logoname {
+    font-size: 30px;
+
+}
+
+.username {
+    font-size: 20px;
+}
 .outer {
     display: flex;
     flex-direction: column;
     border: solid 2px black;
     border-radius: 20px;
     height: auto;
-        max-width: 100%;
+    max-width: 100%;
         flex-basis: calc(30% - 20px);
         margin: 10px;
         box-sizing: border-box;
@@ -31,21 +58,28 @@ li {
 }
 
 .supposeimage {
-    height: 210px;
+    height: 250px;
     width: 100%;
-    background-color: chocolate;
+    /* background-color: chocolate; */
     margin: auto;
 }
 
+.foodimage {
+    object-fit: fill;
+    height: 250px;
+    width: 100%;
+}
 .wholebutton {
     margin: 0%;
     padding: 0%;
 }
+
 .not-found {
     text-align: center;
     padding: 20px;
     color: #ff0000;
 }
+
 body {
     font-family: Arial, sans-serif;
 }
@@ -132,14 +166,11 @@ body {
         margin-right: 3px;
     }
 
-    .span {
-
+                                                                .span {
         position: absolute;
         top: 110px;
         left: 10px;
         font-size: 17px;
-
-
     }
 }
 
@@ -159,15 +190,41 @@ body {
         top: 112px;
         left: 10px;
         font-size: 17px;
+        margin-bottom: 10px;
         /* padding-right: 10px; */
 
     }
 }
 
 /* ////////////////// */
+@media (max-width: 1200px) {
+    .navbar {
+        display: flex;
+        justify-content: space-around;
+        gap: 600px;
+    }
+}
 @media (max-width: 1024px) {
     .outer {
         flex-basis: calc(40% - 20px);
+    }
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 600px;
+}
+
+.search-bar1 {
+    margin-top: 30px;
+}
+}
+
+@media (max-width: 1023px) {
+
+    .navbar {
+        display: flex;
+        justify-content: space-around;
+        gap: 220px;
     }
 }
 
@@ -175,9 +232,20 @@ body {
     .outer {
         flex-basis: calc(100% - 20px);
     }
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 120px;
+
+
+    .search-bar1 {
+        margin-top: 30px;
+
+    }
+}
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
 
     h2,
     h4,
@@ -188,4 +256,13 @@ body {
     .outer {
         margin: 10px;
     }
+.search-bar1 {
+    margin-top: 30px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    gap: 90px;
+}
 }

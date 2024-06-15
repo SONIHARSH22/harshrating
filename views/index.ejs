@@ -10,9 +10,16 @@
 </head>
 
 <body>
-    <h1>Hello foodies</h1>
-    <h3>welcome <%=username %>
-    </h3>
+    <div class="navbar">
+        <p class="logoname">Street <span class="Flover">Flover</span></p>
+        <!-- <h3>Hello foodies</h3> -->
+        <div class="navbarprofile">
+            <img class="profileimg" src="<%=userimage %>" alt="img">
+            <p class="username">
+                <%=username %>
+            </p>
+        </div>
+    </div>
 
     <form action="/bycitybyareabyfood" method="get" class="search-bar" onsubmit="toLowerCaseInputs()">
     
@@ -62,7 +69,7 @@
                 <% street.forEach(element=> { %>
                     <div class="outer" onclick="redirectToDetail('<%= element.id %>')">
                         <div class="supposeimage">
-                            <p>.</p>
+                            <img class="foodimage" src="<%= element.foodimg %>" alt="" srcset="">
                         </div>
 
                         <div class="detail">

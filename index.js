@@ -165,7 +165,11 @@ app.get("/mainpage", async (req, res) => {
       const i = result.rows;
       // console.log(i);
       //console.log(req.user);
-      res.render("index.ejs", { street: i, username: req.user.name });
+      res.render("index.ejs", {
+        street: i,
+        username: req.user.name,
+        userimage: req.user.profile_photo,
+      });
       // res.json(i);
     } catch (error) {
       console.error("Error executing query", error.stack);
@@ -219,7 +223,11 @@ app.get("/bycitybyareabyfood", async (req, res) => {
     const i = result.rows;
 
     // Send response with the retrieved data
-    res.render("index.ejs", { street: i, username: req.user.name });
+    res.render("index.ejs", {
+      street: i,
+      username: req.user.name,
+      userimage: req.user.profile_photo,
+    });
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).send("Internal Server Error");
