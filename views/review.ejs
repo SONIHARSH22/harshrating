@@ -13,25 +13,28 @@
 <body>
 
     <% street.forEach(street=> { %>
+        <% function capitalizeFirstLetter(string) {
+            return string.replace(/\b\w/g, char => char.toUpperCase());
+                    } %>
         <div class="store-details">
             <h4>
                 <div class="detail">
                     <li>
                         <h2>
-                            <%= street.store_name %>,
+                            <%= capitalizeFirstLetter(street.store_name) %>
                         </h2>
                     </li>
                     <li>
-                        <h4><img src="/images/pin.png" alt="" />&nbsp <%= street.city %>,&nbsp <%= street.area %>,</h4>
+                        <h4><img src="/images/pin.png" alt="" />&nbsp <%= capitalizeFirstLetter(street.city) %>,&nbsp <%= capitalizeFirstLetter(street.area) %></h4>
                     </li>
                     <li>
                         <h3>
-                            <%= street.food_item %>,
+                            <%= capitalizeFirstLetter(street.food_item) %>
                         </h3>
                     </li>
                     <li>
                         <h3>
-                            <%= street.overall_rating %>,
+                            <%= capitalizeFirstLetter(street.overall_rating) %>
                         </h3>
                     </li>
                 </div>

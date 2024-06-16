@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="/styles/main.css" />
 
-    <title>Document</title>
+    <title>StreetFlavor</title>
 </head>
 
 <body>
     <div class="navbar">
-        <p class="logoname">Street<span class="Flover">Flavor</span></p>
+        <p class="logoname">Street<span class="Flavor">Flavor</span></p>
         <!-- <h3>Hello foodies</h3> -->
         <div class="navbarprofile">
             <img class="profileimg" src="<%=userimage %>" alt="img">
@@ -61,6 +61,11 @@
     </form>
 
     <div class="mainouter" id="container">
+
+        <% function capitalizeFirstLetter(string) {
+ return string.replace(/\b\w/g, char => char.toUpperCase());
+         } %>
+        
         <% if (street.length===0) { %>
             <div class="not-found">
                 <h2>No store found</h2>
@@ -75,23 +80,22 @@
                         <div class="detail">
                             <li>
                                 <h2>
-                                    <%= element.store_name %>,
+                                    <%= capitalizeFirstLetter(element.store_name) %>
                                 </h2>
                             </li>
                             <li>
                                 <h4>
-                                    <img src="/images/pin.png" alt="" />&nbsp <%= element.city %>,&nbsp <%= element.area
-                                            %>,
+                                    <img src="/images/pin.png" alt="" />&nbsp <%= capitalizeFirstLetter(element.city) %>,&nbsp <%= capitalizeFirstLetter(element.area) %>
                                 </h4>
                             </li>
                             <li>
                                 <h3>
-                                    <%= element.food_item %>,
+                                    <%= capitalizeFirstLetter(element.food_item) %>
                                 </h3>
                             </li>
                             <li>
                                 <h3>
-                                    <%= element.overall_rating %>,
+                                    <%= capitalizeFirstLetter(element.overall_rating) %>
                                 </h3>
                             </li>
                         </div>

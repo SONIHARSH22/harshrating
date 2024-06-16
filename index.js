@@ -8,6 +8,7 @@ import { Strategy } from "passport-local";
 import env from "dotenv";
 import GoogleStrategy from "passport-google-oauth2";
 import cron from "node-cron";
+import flash from "connect-flash"
 
 const app = express();
 const port = 3000;
@@ -27,13 +28,17 @@ app.use(
     },
   })
 );
-
+app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+  res.locals.errorMessage = req.flash('error');
+  next();
+});
 
 // const db = new pg.Client({
 //   user: "postgres",
@@ -100,6 +105,7 @@ app.post("/register", async (req, res) => {
 
     if (checkResult.rows.length > 0) {
       // res.send("Email already exists. Try logging in.");
+      req.flash('error', 'User already exists. Try logging in.');
       res.redirect("/login");
     } else {
       //hashing the password and saving it in the database
@@ -151,6 +157,7 @@ app.post(
   passport.authenticate("local", {
     successRedirect: "/mainpage",
     failureRedirect: "/login",
+    failureFlash: 'Wrong password or username'
   })
 );
 
@@ -266,11 +273,6 @@ app.post("/addreviews", async (req, res) => {
     const rate = req.body["rate"];
     const userid = req.user.srno;
 
-    // console.log(review);
-    // console.log(storeid);
-    // console.log(username);
-    // console.log(rate);
-    // console.log(userid);
     const reviewquery =
       "INSERT INTO reviews1 (shop_id, review, rating, user_name,user_id) VALUES ($1, $2, $3, $4, $5)";
     db.query(reviewquery, [storeid, review, rate, username, userid]);
@@ -304,12 +306,12 @@ passport.use(
               return cd(null, user);
             } else {
               //Did not pass password check
-              return cd(null, false);
+              return cd(null, false,{ message: 'Incorrect password' });
             }
           }
         });
       } else {
-        return cd("User not found");
+        return cd(null, false, { message: 'User not found' });
       }
     } catch (err) {
       console.log(err);
@@ -322,9 +324,9 @@ passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      //clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "https://foodrating.onrender.com/auth/google/secrets",
-      //callbackURL: "http://localhost:3000/auth/google/secrets",
+      callbackURL: "http://localhost:3000/auth/google/secrets",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       scope: ["profile", "email"],
     },

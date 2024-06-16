@@ -26,7 +26,7 @@
     display: flex;
 }
 
-.Flover {
+.Flavor {
     font-weight: 700;
 }
 
@@ -166,7 +166,7 @@ body {
         margin-right: 3px;
     }
 
-                                                                .span {
+    .span {
         position: absolute;
         top: 110px;
         left: 10px;
