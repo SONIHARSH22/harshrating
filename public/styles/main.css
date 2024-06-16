@@ -265,6 +265,7 @@ body {
     justify-content: space-around;
     gap: 90px;
 }
+
 }
 
 @media (max-width: 499px) {
@@ -287,6 +288,7 @@ body {
     justify-content: space-around;
     gap: 60px;
 }
+
 }
 @media (max-width: 321px) {
 
@@ -308,4 +310,5 @@ body {
     justify-content: space-around;
     gap: 30px;
 }
+
 }
